@@ -30,9 +30,9 @@ dependencies:
   flutter:
     sdk: flutter
 
-  google_maps_flutter: ^2.1.4
-#  google_maps_flutter:
-#    path: E:\PROJECT\google_maps_flutter
+#  google_maps_flutter: ^2.1.4
+  google_maps_flutter:
+    path: E:\PROJECT\google_maps_flutter\google_maps_flutter
   http: ^0.13.4
   shared_preferences: ^2.0.8
   mysql1: ^0.19.2
