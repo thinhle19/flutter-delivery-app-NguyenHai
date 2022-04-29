@@ -6,14 +6,13 @@ class RidePicker extends StatefulWidget {
   final Function(PlaceItemRes, bool) onSelected;
   RidePicker(this.onSelected);
 
-
   @override
   _RidePickerState createState() => _RidePickerState();
 }
 
 class _RidePickerState extends State<RidePicker> {
-  late PlaceItemRes fromAddress;
-  late PlaceItemRes toAddress;
+  PlaceItemRes? fromAddress;
+  PlaceItemRes? toAddress;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +36,7 @@ class _RidePickerState extends State<RidePicker> {
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => RidePickerScreen(
-                        fromAddress == null ? "" : fromAddress.name,
+                            fromAddress == null ? "" : fromAddress!.name,
                             (place, isFrom) {
                           widget.onSelected(place, isFrom);
                           fromAddress = place;
@@ -70,10 +69,10 @@ class _RidePickerState extends State<RidePicker> {
                     Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        fromAddress == null ? "From" : fromAddress.name,
+                        fromAddress == null ? "From" : fromAddress!.name,
                         overflow: TextOverflow.ellipsis,
                         style:
-                        TextStyle(fontSize: 16, color: Color(0xff323643)),
+                            TextStyle(fontSize: 16, color: Color(0xff323643)),
                       ),
                     )
                   ],
@@ -89,7 +88,7 @@ class _RidePickerState extends State<RidePicker> {
                 // Navigator.of(context).push(MaterialPageRoute(builder:(context) => RidePickerScreen()));
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => RidePickerScreen(
-                            toAddress == null ? "" : toAddress.name,
+                            toAddress == null ? "" : toAddress!.name,
                             (place, isFrom) {
                           widget.onSelected(place, isFrom);
                           toAddress = place;
@@ -118,10 +117,10 @@ class _RidePickerState extends State<RidePicker> {
                         child: Image.asset('assets/icons/ic_remove_x.png'),
                       ),
                     ),
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(left: 40, right: 50),
                       child: Text(
-                        "Home",
+                        toAddress == null ? "To" : toAddress!.name,
                         overflow: TextOverflow.ellipsis,
                         style:
                             TextStyle(fontSize: 16, color: Color(0xff323643)),
