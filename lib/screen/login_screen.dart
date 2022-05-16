@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:google_map/common/AppColors.dart';
 import 'package:google_map/component/Loading.dart';
 import 'package:google_map/model/login_model.dart';
+import 'package:google_map/model/token.dart';
 import 'package:google_map/screen/map_screen.dart';
 import 'package:google_map/screen/signup_screen.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> globalFormKey = new GlobalKey<FormState>();
   late LoginRequestModel requestModel;
+  late Token token;
   bool showPass = false; // Tạo 1 biến showPass = false (Ko Show Pass)
   TextEditingController _userController = new TextEditingController();
   TextEditingController _passController = new TextEditingController();
@@ -195,12 +197,11 @@ class _LoginScreenState extends State<LoginScreen> {
       Loading.showLoading(context, 'Loading....');
       print(_userController.text);
       print(_passController.text);
-      var response = await http.post(
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      var jsonResponse;
+      var res = await http.post(
         Uri.parse('https://localsearch-vrp.herokuapp.com/api/auth/login'),
-        // body: ({
-        //   'username': _userController.text,
-        //   'password': _passController.text,
-        // }));
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -209,19 +210,61 @@ class _LoginScreenState extends State<LoginScreen> {
           'password': _passController.text,
         }),
       );
-      if (response.statusCode == 200) {
-        Loading.hideLoadingDialog(context);
-        Navigator.push(context, MaterialPageRoute(builder: gotoMapScreen));
-        print("Successful");
-      } else {
-        Loading.hideLoadingDialog(context);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: const Text("Invalid Credentials")));
-        print("Unsuccessfull");
+      // need to check the api status
+      if (res.statusCode == 200) {
+        jsonResponse = json.decode(res.body);
+        print("Response status: ${res.statusCode}");
+
+        print("Response status: ${res.body}");
+
+        if (jsonResponse != null) {
+          setState(() {
+            Loading.hideLoadingDialog(context);
+          });
+
+          sharedPreferences.setString("token", jsonResponse["token"]);
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (BuildContext context) => MapScreen()),
+              (Route<dynamic> route) => false);
+        }
+      }else{
+        setState((){
+          Loading.hideLoadingDialog(context);
+        });
+
+        print("Response status: ${res.body}");
       }
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Black Filed Not Allowed")));
+      // var response = await http.post
+      //   Uri.parse('https://localsearch-vrp.herokuapp.com/api/auth/login'),
+      //   // body: ({
+      //   //   'username': _userController.text,
+      //   //   'password': _passController.text,
+      //   // }));
+      //   headers: <String, String>{
+      //     'Content-Type': 'application/json; charset=UTF-8',
+      //   },
+      //   body: jsonEncode(<String, String>{
+      //     'username': _userController.text,
+      //     'password': _passController.text,
+      //   }),
+      // );
+      // if (response.statusCode == 200) {
+      //   print(Token.fromJson(jsonDecode(response.body)));
+      //   Loading.hideLoadingDialog(context);
+      //   Navigator.pushAndRemoveUntil(
+      //     context,
+      //       MaterialPageRoute(
+      //           builder: (BuildContext context) => MapScreen()),
+      //       ModalRoute.withName('/first'));
+      //   print("Response status: ${response.statusCode}");
+      //
+      //   print("Response status: ${response.body}");
+      // } else {
+      //   Loading.hideLoadingDialog(context);
+      //   ScaffoldMessenger.of(context)
+      //       .showSnackBar(SnackBar(content: const Text("Invalid Credentials")));
+      //   print("Unsuccessfull");
+      // }
     }
   }
 
@@ -229,10 +272,6 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       showPass = !showPass;
     });
-  }
-
-  Widget gotoMapScreen(BuildContext context) {
-    return MapScreen();
   }
 
   void onSignUpClicked() {

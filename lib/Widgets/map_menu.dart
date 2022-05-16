@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_map/screen/home_screen.dart';
 
+import 'package:google_map/screen/map_menu_screen/notifications_screen.dart';
+
 class MapMenu extends StatefulWidget {
   const MapMenu({Key? key}) : super(key: key);
 
@@ -23,6 +25,9 @@ class _MapMenuState extends State<MapMenu> {
           ),
         ),
         ListTile(
+          onTap: (){
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NotificationScreen()) );
+          },
           leading: Image.asset(
             'assets/icons/ic_notification.png',
           ),
@@ -41,21 +46,36 @@ class _MapMenuState extends State<MapMenu> {
           ),
         ),
         ListTile(
+          // onTap: () {
+          //   Navigator.pushAndRemoveUntil(
+          //       context,
+          //       MaterialPageRoute(
+          //           builder: (BuildContext context) => LoginScreen()),
+          //       ModalRoute.withName('/'));
+          // },
           onTap: () {
-            AlertDialog(
-              title: Text("Accept?"),
-              content: Text("Do you accept?"),
-              // actions: [
-              //   TextButton("No"),
-              //   TextButton("Yes"),
-              // ],
-            );
-            // Navigator.push(context, MaterialPageRoute(builder: gotoLogin));
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => HomePage()),
-                ModalRoute.withName('/'));
+            showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                      title: Text("LOGOUT"),
+                      content: Text("Do you want to logout ?"),
+                      actions: [
+                        TextButton(
+                          child: Text("Yes"),
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        HomePage()),
+                                ModalRoute.withName('/'));
+                          },
+                        ),
+                        TextButton(child: Text("No") , onPressed: (){
+                          Navigator.of(context).pop();
+                        },),
+                      ],
+                    ));
           },
           leading: Image.asset(
             'assets/icons/ic_logout.png',
