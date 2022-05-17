@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_map/screen/home_screen.dart';
 
-import 'package:google_map/screen/map_menu_screen/notifications_screen.dart';
 
 class MapMenu extends StatefulWidget {
   const MapMenu({Key? key}) : super(key: key);
@@ -26,7 +25,6 @@ class _MapMenuState extends State<MapMenu> {
         ),
         ListTile(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NotificationScreen()) );
           },
           leading: Image.asset(
             'assets/icons/ic_notification.png',

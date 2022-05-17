@@ -9,9 +9,10 @@ import 'package:google_map/common/AppColors.dart';
 import 'package:google_map/component/Loading.dart';
 import 'package:google_map/model/login_model.dart';
 import 'package:google_map/model/token.dart';
-import 'package:google_map/screen/map_screen.dart';
 import 'package:google_map/screen/signup_screen.dart';
 import 'package:http/http.dart' as http;
+
+import 'home_page_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -35,6 +36,18 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     requestModel = new LoginRequestModel(username: '', password: '');
+    checklogin ();
+  }
+
+  void checklogin() async {
+    // Kiem tra thong tin dang nhap da co san hay chua
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? val = sharedPreferences.getString("login");
+    if (val != null){
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => HomePageScreen()),
+              (Route<dynamic> route) => false);
+    }
   }
 
   @override
@@ -206,8 +219,8 @@ class _LoginScreenState extends State<LoginScreen> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          'username': _userController.text,
-          'password': _passController.text,
+          "username": _userController.text,
+          "password": _passController.text,
         }),
       );
       // need to check the api status
@@ -222,9 +235,9 @@ class _LoginScreenState extends State<LoginScreen> {
             Loading.hideLoadingDialog(context);
           });
 
-          sharedPreferences.setString("token", jsonResponse["token"]);
+          await sharedPreferences.setString("login", jsonResponse["token"]);
           Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => MapScreen()),
+              MaterialPageRoute(builder: (BuildContext context) => HomePageScreen()),
               (Route<dynamic> route) => false);
         }
       }else{

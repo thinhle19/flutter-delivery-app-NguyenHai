@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_map/Widgets/ride_picker.dart';
-import 'package:google_map/Widgets/map_menu.dart';
 import 'package:google_map/model/place_item_res.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -19,12 +18,30 @@ class _MapScreenState extends State<MapScreen> {
   // late BitmapDescriptor sourceIcon;
   // late BitmapDescriptor destinationIcon;
 
-  final Completer<GoogleMapController> _mapController = Completer();
+  late GoogleMapController _mapController;
+  var currentLocation;
+
+  // void initState(){
+  //   super.initState();
+  //   setState((){
+  //     _mapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(currentLocation.latitude, currentLocation.longitude), 14));
+  //   });
+  // }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(10.760170057049345, 106.68225829787944),
     zoom: 15,
   );
+
+  void _onMapCreated(GoogleMapController controller) {
+    this._mapController = controller;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,9 +60,7 @@ class _MapScreenState extends State<MapScreen> {
               mapType: MapType.normal,
               initialCameraPosition: _kGooglePlex,
               markers: Set<Marker>.of(_markers.values),
-              onMapCreated: (GoogleMapController controller) {
-                _mapController.complete(controller);
-              },
+              onMapCreated:_onMapCreated
             ),
             Positioned(
               left: 0,
@@ -54,22 +69,29 @@ class _MapScreenState extends State<MapScreen> {
               child: Column(
                 children: <Widget>[
                   AppBar(
+                    leading: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.arrow_back),color: Colors.black,
+                      iconSize: 25,
+                    ),
                     backgroundColor: Colors.transparent,
                     elevation: 0.0,
-                    title: Text(
-                      " Delivery App",
-                      style: TextStyle(color: Colors.black),
-                    ),
-                    leading: TextButton(
-                      onPressed: () {
-                        print("click-menu");
-                        _scaffoldkey.currentState?.openDrawer();
-                      },
-                      child: Icon(
-                        Icons.view_headline,
-                        color: Colors.black,
-                      ),
-                    ),
+                    // title: Text(
+                    //   " Delivery App",
+                    //   style: TextStyle(color: Colors.black),
+                    // ),
+                    // leading: TextButton(
+                    //   onPressed: () {
+                    //     print("click-menu");
+                    //     _scaffoldkey.currentState?.openDrawer();
+                    //   },
+                    //   child: Icon(
+                    //     Icons.view_headline,
+                    //     color: Colors.black,
+                    //   ),
+                    // ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -81,9 +103,9 @@ class _MapScreenState extends State<MapScreen> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: MapMenu(),
-      ),
+      // drawer: Drawer(
+      //    child: MapMenu(),
+      // ),
     );
   }
 
@@ -99,7 +121,7 @@ class _MapScreenState extends State<MapScreen> {
     _markers.remove(markerId);
     // _mapController.;
     // creating a new MARKER
-     Marker marker = Marker(
+     Marker startMarker = Marker(
       markerId: markerId,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       position: LatLng(place.lat, place.lng),
@@ -109,9 +131,24 @@ class _MapScreenState extends State<MapScreen> {
       ),
     );
 
+    final MarkerId markerId1 = MarkerId('markerId');
+    _markers.remove(markerId1);
+    Marker destinationMarker = Marker(
+      markerId: markerId1,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      position: LatLng(place.lat, place.lng),
+      infoWindow: InfoWindow(
+        title: place.name,
+        snippet: place.address,
+      ),
+    );
+
     setState(() {
       // adding a new marker to map
-      _markers[markerId] = marker;
+      // _markers[markerId] = marker;
+      _markers[markerId] = startMarker;
+      _markers[markerId1]=  destinationMarker;
+
     });
     //
     // for (var m in _markers.values) {

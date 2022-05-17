@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class PlaceService {
   static Future<List<PlaceItemRes>> searchPlace(String keyword) async {
     String url =
-        "https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyCGrB4Q8A053yAzK1Fj3NOPupyGo-t425o" +
+        "https://maps.googleapis.com/maps/api/place/textsearch/json?key=AIzaSyAtTc2lrpq2Nd0FFj3TcYp_5rwwM2vnJvU" +
             "&language=vi&region=VN&query=" +
             Uri.encodeQueryComponent(keyword);
 
