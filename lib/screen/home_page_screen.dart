@@ -99,10 +99,7 @@ class _HomePageScreenState extends State<HomePageScreen> {
         type: BottomNavigationBarType.fixed,
         iconSize: 30,
         items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home",),
           BottomNavigationBarItem(icon: Icon(Icons.map), label: "Map"),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Profile"),
         ],

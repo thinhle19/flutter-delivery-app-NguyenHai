@@ -12,7 +12,7 @@ class MapScreenView extends StatelessWidget {
           children:<Widget>[
             Center(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(50, 250, 50, 0),
+                padding: const EdgeInsets.fromLTRB(50, 300, 50, 0),
                 child: MaterialButton(
                   height: 50,
                   minWidth: double.infinity,

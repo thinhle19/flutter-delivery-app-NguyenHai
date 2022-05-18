@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -21,12 +20,6 @@ class _MapScreenState extends State<MapScreen> {
   late GoogleMapController _mapController;
   var currentLocation;
 
-  // void initState(){
-  //   super.initState();
-  //   setState((){
-  //     _mapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(currentLocation.latitude, currentLocation.longitude), 14));
-  //   });
-  // }
 
   @override
   void dispose() {
@@ -55,13 +48,12 @@ class _MapScreenState extends State<MapScreen> {
         child: Stack(
           children: <Widget>[
             GoogleMap(
-              // myLocationButtonEnabled: true,
-              // myLocationEnabled: true,
-              mapType: MapType.normal,
-              initialCameraPosition: _kGooglePlex,
-              markers: Set<Marker>.of(_markers.values),
-              onMapCreated:_onMapCreated
-            ),
+                // myLocationButtonEnabled: true,
+                // myLocationEnabled: true,
+                mapType: MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                markers: Set<Marker>.of(_markers.values),
+                onMapCreated: _onMapCreated),
             Positioned(
               left: 0,
               top: 0,
@@ -73,7 +65,8 @@ class _MapScreenState extends State<MapScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.arrow_back),color: Colors.black,
+                      icon: const Icon(Icons.arrow_back),
+                      color: Colors.black,
                       iconSize: 25,
                     ),
                     backgroundColor: Colors.transparent,
@@ -110,32 +103,21 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void onPlaceSelected(PlaceItemRes place, bool fromAddress) {
-    var markerId = fromAddress ? "from_address" : "to_address";
-    _addMarker(markerId, place);
+    // var markerId = fromAddress ? "from_address" : "to_address";
+    _addMarker(fromAddress, place);
     // _moveCamera();
     // _checkDrawPoline();
   }
 
-  void _addMarker(String markerId, PlaceItemRes place) async {
-    final MarkerId markerId = MarkerId('markerId');
+  void _addMarker(bool isFromAddress, PlaceItemRes place) async {
+    final MarkerId markerId =
+        MarkerId(isFromAddress ? 'from_address' : 'to_address');
     _markers.remove(markerId);
-    // _mapController.;
-    // creating a new MARKER
-     Marker startMarker = Marker(
+    Marker marker = Marker(
       markerId: markerId,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      position: LatLng(place.lat, place.lng),
-      infoWindow: InfoWindow(
-        title: place.name,
-        snippet: place.address,
+      icon: BitmapDescriptor.defaultMarkerWithHue(
+        isFromAddress ? BitmapDescriptor.hueRed : BitmapDescriptor.hueBlue,
       ),
-    );
-
-    final MarkerId markerId1 = MarkerId('markerId');
-    _markers.remove(markerId1);
-    Marker destinationMarker = Marker(
-      markerId: markerId1,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
       position: LatLng(place.lat, place.lng),
       infoWindow: InfoWindow(
         title: place.name,
@@ -145,45 +127,10 @@ class _MapScreenState extends State<MapScreen> {
 
     setState(() {
       // adding a new marker to map
-      // _markers[markerId] = marker;
-      _markers[markerId] = startMarker;
-      _markers[markerId1]=  destinationMarker;
+      _markers[markerId] = marker;
 
     });
-    //
-    // for (var m in _markers.values) {
-    // await _mapController.getVisibleRegion(m.position);
+
   }
-  //
-  // void _moveCamera() {
-  //   print("Move camera: ");
-  //   print(_markers);
-  //   if (_markers.values.length > 1) {
-  //     var fromLatLng = _markers["from_address"]?.position;
-  //     var toLatLng = _markers["to_address"]?.position;
-  //
-  //     var sLat, sLng, nLat, nLng;
-  //     if(fromLatLng?.latitude <= toLatLng!.latitude) {
-  //       sLat = fromLatLng?.latitude;
-  //       nLat = toLatLng.latitude;
-  //     } else {
-  //       sLat = toLatLng.latitude;
-  //       nLat = fromLatLng?.latitude;
-  //     }
-  //
-  //     if(fromLatLng?.longitude < toLatLng.longitude) {
-  //       sLng = fromLatLng?.longitude;
-  //       nLng = toLatLng.longitude;
-  //     } else {
-  //       sLng = toLatLng.longitude;
-  //       nLng = fromLatLng?.longitude;
-  //     }
-  //
-  //     LatLngBounds bounds = LatLngBounds(northeast: LatLng(nLat, nLng), southwest: LatLng(sLat, sLng));
-  //     _mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
-  //   } else {
-  //     _mapController.animateCamera(CameraUpdate.newLatLng(
-  //         _markers.values.elementAt(0).position));
-  //   }
-  // }
+
 }

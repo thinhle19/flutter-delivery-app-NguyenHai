@@ -8,10 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:google_map/common/AppColors.dart';
 import 'package:google_map/component/Loading.dart';
 import 'package:google_map/model/login_model.dart';
-import 'package:google_map/model/token.dart';
 import 'package:google_map/screen/signup_screen.dart';
 import 'package:http/http.dart' as http;
-
 import 'home_page_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -23,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   GlobalKey<FormState> globalFormKey = new GlobalKey<FormState>();
   late LoginRequestModel requestModel;
-  late Token token;
   bool showPass = false; // Tạo 1 biến showPass = false (Ko Show Pass)
   TextEditingController _userController = new TextEditingController();
   TextEditingController _passController = new TextEditingController();
@@ -226,10 +223,9 @@ class _LoginScreenState extends State<LoginScreen> {
       // need to check the api status
       if (res.statusCode == 200) {
         jsonResponse = json.decode(res.body);
+
         print("Response status: ${res.statusCode}");
-
         print("Response status: ${res.body}");
-
         if (jsonResponse != null) {
           setState(() {
             Loading.hideLoadingDialog(context);

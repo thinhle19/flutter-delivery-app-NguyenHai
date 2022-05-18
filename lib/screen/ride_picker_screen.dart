@@ -7,7 +7,7 @@ class RidePickerScreen extends StatefulWidget {
   final Function(PlaceItemRes, bool) onSelected;
   final bool _FromAddress;
   const RidePickerScreen(
-      this.selectedAddress, this.onSelected, this._FromAddress);
+      this.selectedAddress, this.onSelected, this._FromAddress,);
 
   @override
   _RidePickerScreenState createState() => _RidePickerScreenState();
