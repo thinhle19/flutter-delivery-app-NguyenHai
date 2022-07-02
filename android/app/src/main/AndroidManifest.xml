@@ -1,12 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.google_map">
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-   <application
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <application
         android:label="google_map"
         android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY"
-                  android:value="AIzaSyAtTc2lrpq2Nd0FFj3TcYp_5rwwM2vnJvU"/>
+                  android:value="AIzaSyCkyruhKSYxXABYVzFEHLpehHBbDmdHVfU"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

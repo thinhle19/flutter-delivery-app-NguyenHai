@@ -1,14 +1,11 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:google_map/screen/signup_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_map/common/AppColors.dart';
 import 'package:google_map/component/Loading.dart';
-import 'package:google_map/model/login_model.dart';
-import 'package:google_map/screen/signup_screen.dart';
+import 'package:google_map/model/login_request_model.dart';
 import 'package:http/http.dart' as http;
 import 'home_page_screen.dart';
 
@@ -19,30 +16,32 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
-  GlobalKey<FormState> globalFormKey = new GlobalKey<FormState>();
+  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   late LoginRequestModel requestModel;
   bool showPass = false; // Tạo 1 biến showPass = false (Ko Show Pass)
-  TextEditingController _userController = new TextEditingController();
-  TextEditingController _passController = new TextEditingController();
-  var _userError = "Tài khoản không hợp lệ";
-  var _passError = "Mật khẩu không hợp lệ";
+  final TextEditingController _userController = TextEditingController();
+  final TextEditingController _passController = TextEditingController();
+  final _userError = "Invalid Username";
+  final _passError = "Invalid Password";
   var _userInvalid = false; // Tài khoản hợp lệ
   var _passInvalid = false;
 
   @override
   void initState() {
     super.initState();
-    requestModel = new LoginRequestModel(username: '', password: '');
-    checklogin ();
+    requestModel = LoginRequestModel(username: '', password: '');
+    checklogin();
+
   }
 
   void checklogin() async {
     // Kiem tra thong tin dang nhap da co san hay chua
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? val = sharedPreferences.getString("login");
-    if (val != null){
+    if (val != null) {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => HomePageScreen()),
+          MaterialPageRoute(
+              builder: (BuildContext context) => const HomePageScreen()),
               (Route<dynamic> route) => false);
     }
   }
@@ -51,29 +50,16 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Color(0xFFFFFFFF),
-      appBar: AppBar(
-        elevation: 0,
-        systemOverlayStyle: SystemUiOverlayStyle.light,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back),
-          iconSize: 25,
-          color: Colors.black,
-        ),
-      ),
+      backgroundColor: const Color(0xFFFFFFFF),
       body: Container(
-        padding: const EdgeInsets.fromLTRB(30, 0, 30, 0), // Căn chỉnh lề
+        padding: const EdgeInsets.fromLTRB(30, 100, 30, 0), // Căn chỉnh lề
         color: Colors.white,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+              const Padding(
+                padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
                 child: Center(
                   child: Text(
                     "LOGIN",
@@ -85,18 +71,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                 child: TextFormField(
                   onSaved: (input) => requestModel.username = input!,
                   controller: _userController,
-                  style: TextStyle(fontSize: 18, color: Colors.black),
+                  style: const TextStyle(fontSize: 18, color: Colors.black),
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      prefixIcon: Icon(Icons.email),
-                      labelText: "Email",
+                      prefixIcon: const Icon(Icons.person),
+                      labelText: "Username",
                       errorText: _userInvalid ? _userError : null,
                       labelStyle: TextStyle(
                           color: Color(AppColors.PRIMARY), fontSize: 15)),
@@ -108,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: AlignmentDirectional.centerEnd,
                   children: <Widget>[
                     TextFormField(
-                      style: TextStyle(fontSize: 18, color: Colors.black),
+                      style: const TextStyle(fontSize: 18, color: Colors.black),
                       keyboardType: TextInputType.visiblePassword,
                       controller: _passController,
                       obscureText: !showPass,
@@ -116,9 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       //  phủ định của !showPass = true ( Ẩn mật khẩu)
                       decoration: InputDecoration(
                           border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          prefixIcon: Icon(Icons.lock),
+                          prefixIcon: const Icon(Icons.lock),
                           labelText: "PassWord",
                           errorText: _passInvalid ? _passError : null,
                           suffixIcon: IconButton(
@@ -133,16 +119,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: SizedBox(
                   width: double.infinity,
                   child: MaterialButton(
                     height: 50,
                     minWidth: double.infinity,
                     shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(
+                        side: const BorderSide(color: Colors.blue),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const Text(
                       "SIGN IN",
                       style: TextStyle(color: Colors.white),
                     ),
@@ -157,7 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                 child: Row(
                   mainAxisAlignment:
-                      MainAxisAlignment.center, //Tạo khoảng cách 2 bên
+                  MainAxisAlignment.center, //Tạo khoảng cách 2 bên
                   children: <Widget>[
                     RichText(
                       text: TextSpan(
@@ -168,17 +154,21 @@ class _LoginScreenState extends State<LoginScreen> {
                                 text: "SIGN UP",
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    onSignUpClicked();
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                SignUpScreen()));
                                   }, // chưa hành động onTap
                                 style:
-                                    TextStyle(color: Colors.blue, fontSize: 15))
+                                const TextStyle(color: Colors.blue, fontSize: 15))
                           ]),
                     )
                   ],
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                 child: Image.asset('assets/screen/Screen.png',
                     height: 140, width: 140),
               ),
@@ -187,6 +177,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  Future<String> getUserToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    return sharedPreferences.get("token") as String;
   }
 
   Future<void> login() async {
@@ -207,8 +202,6 @@ class _LoginScreenState extends State<LoginScreen> {
       Loading.showLoading(context, 'Loading....');
       print(_userController.text);
       print(_passController.text);
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
       var jsonResponse;
       var res = await http.post(
         Uri.parse('https://localsearch-vrp.herokuapp.com/api/auth/login'),
@@ -230,50 +223,34 @@ class _LoginScreenState extends State<LoginScreen> {
           setState(() {
             Loading.hideLoadingDialog(context);
           });
-
-          await sharedPreferences.setString("login", jsonResponse["token"]);
+          SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+          await sharedPreferences.setString("token", jsonResponse['token']);
           Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (BuildContext context) => HomePageScreen()),
-              (Route<dynamic> route) => false);
+              MaterialPageRoute(
+                  builder: (BuildContext context) => const HomePageScreen()),
+                  (Route<dynamic> route) => false);
         }
-      }else{
-        setState((){
+      } else {
+        setState(() {
           Loading.hideLoadingDialog(context);
         });
-
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text("Error"),
+              content: const Text("Account does not exist!"),
+              actions: [
+                TextButton(
+                  child: const Text("Ok"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ));
         print("Response status: ${res.body}");
       }
-      // var response = await http.post
-      //   Uri.parse('https://localsearch-vrp.herokuapp.com/api/auth/login'),
-      //   // body: ({
-      //   //   'username': _userController.text,
-      //   //   'password': _passController.text,
-      //   // }));
-      //   headers: <String, String>{
-      //     'Content-Type': 'application/json; charset=UTF-8',
-      //   },
-      //   body: jsonEncode(<String, String>{
-      //     'username': _userController.text,
-      //     'password': _passController.text,
-      //   }),
-      // );
-      // if (response.statusCode == 200) {
-      //   print(Token.fromJson(jsonDecode(response.body)));
-      //   Loading.hideLoadingDialog(context);
-      //   Navigator.pushAndRemoveUntil(
-      //     context,
-      //       MaterialPageRoute(
-      //           builder: (BuildContext context) => MapScreen()),
-      //       ModalRoute.withName('/first'));
-      //   print("Response status: ${response.statusCode}");
-      //
-      //   print("Response status: ${response.body}");
-      // } else {
-      //   Loading.hideLoadingDialog(context);
-      //   ScaffoldMessenger.of(context)
-      //       .showSnackBar(SnackBar(content: const Text("Invalid Credentials")));
-      //   print("Unsuccessfull");
-      // }
     }
   }
 
@@ -281,15 +258,5 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       showPass = !showPass;
     });
-  }
-
-  void onSignUpClicked() {
-    setState(() {
-      Navigator.push(context, MaterialPageRoute(builder: gotoSignUp));
-    });
-  }
-
-  Widget gotoSignUp(BuildContext context) {
-    return SignUpScreen();
   }
 }
