@@ -5,7 +5,7 @@ import 'package:google_map/screen/test_screen.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MyApp(),
+    home: LoginScreen(),
   ));
 }
 //
