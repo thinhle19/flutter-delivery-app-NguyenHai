@@ -7,6 +7,6 @@ import 'package:google_map/screen/views/map_screen.dart';
 void main() {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MapScreen(),
+    home: LoginScreen(),
   ));
 }

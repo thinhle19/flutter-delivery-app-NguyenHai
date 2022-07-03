@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_map/common/AppColors.dart';
-import 'package:google_map/model/register_request_model.dart';
+import 'package:google_map/common/app_colors.dart';
+import 'package:google_map/common/helper.dart';
 import 'package:google_map/service/http_service.dart';
 import 'package:google_map/service/local_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../component/Loading.dart';
+import '../model/http/register_request_model.dart';
 import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -224,9 +225,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         );
-                        await _showSuccessDialog(_usernameController.text);
+                        await showSuccessDialog(
+                          'Successfully created ${_usernameController.text}\'s account',
+                          context,
+                        );
+                        Navigator.of(context).pop();
                       } catch (e) {
-                        await _showErrorDialog(e.toString());
+                        await showErrorDialog(e.toString(), context);
+                        Navigator.of(context).pop();
                       }
                     },
                     child: Text(
@@ -244,92 +250,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp(RegisterRequestModel info) async {
-    showDialog(
-      // The user CANNOT close this dialog  by pressing outsite it
-      barrierDismissible: false,
-      context: context,
-      builder: (_) {
-        return Dialog(
-          // The background color
-          backgroundColor: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                // The loading indicator
-                CircularProgressIndicator(),
-                SizedBox(
-                  height: 15,
-                ),
-                // Some text
-                Text('Signing you up...')
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
+    await showLoadingDialog(context);
     await HttpService.registerUser(info);
     Navigator.of(context).pop();
-  }
-
-  Future<void> _showErrorDialog(String msg) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(msg),
-                Text('Retry or contact admin for help!'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _showSuccessDialog(String username) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Success!'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Sucessfully created $username\'s account!'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void onToggleShowPass() {

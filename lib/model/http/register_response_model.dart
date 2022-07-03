@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-RegisterResponseModel regiserResponseModel (String str) => RegisterResponseModel.fromJson(json.decode(str));
+RegisterResponseModel regiserResponseModel(String str) =>
+    RegisterResponseModel.fromJson(json.decode(str));
+
 class RegisterResponseModel {
   RegisterResponseModel({
     required this.iduser,
@@ -23,7 +25,7 @@ class RegisterResponseModel {
   late final Role role;
   late final Vehicle vehicle;
 
-  RegisterResponseModel.fromJson(Map<String, dynamic> json){
+  RegisterResponseModel.fromJson(Map<String, dynamic> json) {
     iduser = json['iduser'];
     username = json['username'];
     password = json['password'];
@@ -58,7 +60,7 @@ class Role {
   late final int idRole;
   late final String nameRole;
 
-  Role.fromJson(Map<String, dynamic> json){
+  Role.fromJson(Map<String, dynamic> json) {
     idRole = json['id_role'];
     nameRole = json['name_role'];
   }
@@ -80,14 +82,14 @@ class Vehicle {
     required this.status,
     required this.nodes,
   });
-  late final int idVehicle;
+  late final String idVehicle;
   late final int capacity;
   late final int cost;
   late final int loading;
   late final bool status;
   late final List<dynamic> nodes;
 
-  Vehicle.fromJson(Map<String, dynamic> json){
+  Vehicle.fromJson(Map<String, dynamic> json) {
     idVehicle = json['id_vehicle'];
     capacity = json['capacity'];
     cost = json['cost'];
@@ -98,7 +100,7 @@ class Vehicle {
 
   Map<String, dynamic> toJson() {
     final _data = <String, dynamic>{};
-    _data['id_vehicle'] = idVehicle;
+    _data['id_vehicle'] = idVehicle.toString();
     _data['capacity'] = capacity;
     _data['cost'] = cost;
     _data['loading'] = loading;

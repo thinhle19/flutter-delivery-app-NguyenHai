@@ -10,4 +10,14 @@ class LocalStorage {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('id_vehicle');
   }
+
+  static Future<void> setUserToken(String token) async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString('token', token);
+  }
+
+  static Future<String> getUserToken() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.get("token") as String;
+  }
 }

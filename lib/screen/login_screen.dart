@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:google_map/screen/signup_screen.dart';
+import 'package:google_map/service/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:google_map/common/AppColors.dart';
+import 'package:google_map/common/app_colors.dart';
 import 'package:google_map/component/Loading.dart';
-import 'package:google_map/model/login_request_model.dart';
 import 'package:http/http.dart' as http;
+import '../model/http/login_request_model.dart';
 import 'home_page_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -178,11 +179,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<String> getUserToken() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    return sharedPreferences.get("token") as String;
-  }
-
   Future<void> login() async {
     setState(() {
       if (_userController.text.length < 5) {
@@ -220,9 +216,7 @@ class _LoginScreenState extends State<LoginScreen> {
           setState(() {
             Loading.hideLoadingDialog(context);
           });
-          SharedPreferences sharedPreferences =
-              await SharedPreferences.getInstance();
-          await sharedPreferences.setString("token", jsonResponse['token']);
+          LocalStorage.setUserToken(jsonResponse['token']);
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                   builder: (BuildContext context) => const HomePageScreen()),

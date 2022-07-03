@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:google_map/common/credentials.dart';
+import 'package:google_map/common/helper.dart';
+import 'package:google_map/model/http/add_history_request.dart';
+import 'package:google_map/service/http_service.dart';
+import 'package:google_map/service/local_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
@@ -9,6 +13,7 @@ import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../component/Loading.dart';
+import '../../model/http/register_response_model.dart';
 import '../home_page_screen.dart';
 
 class MapScreen extends StatefulWidget {
@@ -46,9 +51,15 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       getLocation();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
     setState(() {
       setMarkersIcon();
     });
+    super.didChangeDependencies();
   }
 
   void getLocation() async {
@@ -210,35 +221,58 @@ class _MapScreenState extends State<MapScreen> {
                             child: const Text("Check"),
                             onPressed: () {
                               showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        title: const Text("Check"),
-                                        content: const Text(
-                                            "Have you delivered successfully?"),
-                                        actions: [
-                                          TextButton(
-                                            child: const Text("Yes"),
-                                            // onPressed: () async {
-                                            //   await Check(
-                                            //       id_vehicle, vehicle_status);
-                                            //   Navigator.pushAndRemoveUntil(
-                                            //       context,
-                                            //       MaterialPageRoute(
-                                            //           builder: (BuildContext
-                                            //           context) =>
-                                            //               HomePageScreen()),
-                                            //       ModalRoute.withName('/'));
-                                            // },
-                                            onPressed: () {},
-                                          ),
-                                          TextButton(
-                                            child: const Text("No"),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      ));
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text("Check"),
+                                  content: const Text(
+                                      "Have you delivered successfully?"),
+                                  actions: [
+                                    TextButton(
+                                      child: const Text("Yes"),
+                                      onPressed: () async {
+                                        // Navigator.of(context).pop();
+                                        showLoadingDialog(context);
+                                        try {
+                                          await HttpService.addHistory(
+                                            AddHistoryRequestModel(
+                                              time: DateTime.now()
+                                                  .toIso8601String(),
+                                              costRoute: '123',
+                                              capacityRoute: '123',
+                                              statusRoute: true,
+                                              vehicle: Vehicle(
+                                                  capacity: 332,
+                                                  cost: 22,
+                                                  idVehicle:
+                                                      VEHICLE_ID /* (await LocalStorage
+                                                      .getVehicleId())! */
+                                                  ,
+                                                  loading: 332,
+                                                  nodes: [],
+                                                  status: true),
+                                              loadingRoute: '3232',
+                                            ),
+                                          );
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
+                                          showSuccessDialog(
+                                              'Checked Route!', context);
+                                        } catch (e) {
+                                          Navigator.of(context).pop();
+                                          showErrorDialog(
+                                              e.toString(), context);
+                                        }
+                                      },
+                                    ),
+                                    TextButton(
+                                      child: const Text("No"),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
                             },
                           )
                         ],
