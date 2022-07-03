@@ -40,7 +40,7 @@ class _MapScreen1State extends State<MapScreen1> {
   void getCurrentLocation() async {
     Location location = Location();
 
-    location.getLocation().then(
+    await location.getLocation().then(
       (location) {
         currentLocation = location;
       },
@@ -143,53 +143,54 @@ class _MapScreen1State extends State<MapScreen1> {
           child: Stack(
             children: [
               Positioned.fill(
-                child: currentLocation == null
+                child: /*  currentLocation == null
                     ? Center(child: Text("Loading"))
-                    : GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: LatLng(currentLocation!.latitude!,
-                              currentLocation!.longitude!),
-                          zoom: 13.5,
-                        ),
-                        polylines: {
-                          Polyline(
-                            polylineId: PolylineId("route"),
-                            points: polylineCoordinates,
-                            color: Colors.blue,
-                            width: 6,
-                          ),
-                        },
-                        markers: {
-                          Marker(
-                            markerId: const MarkerId("currentLocation"),
-                            icon: currentLocationIcon,
-                            infoWindow: InfoWindow(
-                              title: "Driver",
-                            ),
-                            position: LatLng(currentLocation!.latitude!,
-                                currentLocation!.longitude!),
-                          ),
-                          Marker(
-                            markerId: MarkerId("source"),
-                            infoWindow: InfoWindow(
-                              title: "Warehouse",
-                            ),
-                            icon: sourceIcon,
-                            position: sourceLocation,
-                          ),
-                          Marker(
-                            markerId: MarkerId("destination"),
-                            icon: destinationIcon,
-                            infoWindow: InfoWindow(
-                              title: "Customer",
-                            ),
-                            position: destination,
-                          ),
-                        },
-                        onMapCreated: (mapController) {
-                          _controller.complete(mapController);
-                        },
+                    :  */
+                    GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(currentLocation!.latitude!,
+                        currentLocation!.longitude!),
+                    zoom: 13.5,
+                  ),
+                  polylines: {
+                    Polyline(
+                      polylineId: PolylineId("route"),
+                      points: polylineCoordinates,
+                      color: Colors.blue,
+                      width: 6,
+                    ),
+                  },
+                  markers: {
+                    Marker(
+                      markerId: const MarkerId("currentLocation"),
+                      icon: currentLocationIcon,
+                      infoWindow: InfoWindow(
+                        title: "Driver",
                       ),
+                      position: LatLng(currentLocation!.latitude!,
+                          currentLocation!.longitude!),
+                    ),
+                    Marker(
+                      markerId: MarkerId("source"),
+                      infoWindow: InfoWindow(
+                        title: "Warehouse",
+                      ),
+                      icon: sourceIcon,
+                      position: sourceLocation,
+                    ),
+                    Marker(
+                      markerId: MarkerId("destination"),
+                      icon: destinationIcon,
+                      infoWindow: InfoWindow(
+                        title: "Customer",
+                      ),
+                      position: destination,
+                    ),
+                  },
+                  onMapCreated: (mapController) {
+                    _controller.complete(mapController);
+                  },
+                ),
               ),
               Positioned(
                 left: 0,
