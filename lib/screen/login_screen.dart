@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:google_map/screen/signup_screen.dart';
+import 'package:google_map/service/http_service.dart';
 import 'package:google_map/service/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
@@ -210,13 +211,14 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res.statusCode == 200) {
         jsonResponse = json.decode(res.body);
 
-        print("Response status: ${res.statusCode}");
-        print("Response status: ${res.body}");
         if (jsonResponse != null) {
           setState(() {
             Loading.hideLoadingDialog(context);
           });
-          LocalStorage.setUserToken(jsonResponse['token']);
+          await LocalStorage.setUserToken(jsonResponse['token']);
+          // LocalStorage.saveVehicleId(
+          //   await HttpService.getVehicleId(_userController.text),
+          // );
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                   builder: (BuildContext context) => const HomePageScreen()),

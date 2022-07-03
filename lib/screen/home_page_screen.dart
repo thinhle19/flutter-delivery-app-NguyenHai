@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_map/screen/views/history_screen.dart';
 import 'package:google_map/screen/views/home_screen_view.dart';
 import 'package:google_map/screen/views/profile_screen_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class HomePageScreen extends StatefulWidget {
   const HomePageScreen({Key? key}) : super(key: key);
@@ -15,13 +15,14 @@ class _HomePageScreenState extends State<HomePageScreen> {
   int _currentIndex = 0;
   // String username ="";
 
-  final List<Widget> _children =[
+  final List<Widget> _children = [
     HomeScreenView(),
     ProfileView(),
+    HistoryScreen(),
   ];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     // getCred();
   }
@@ -43,8 +44,13 @@ class _HomePageScreenState extends State<HomePageScreen> {
         type: BottomNavigationBarType.fixed,
         iconSize: 30,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home",),
-          BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Profile"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_circle), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
         ],
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -55,5 +61,4 @@ class _HomePageScreenState extends State<HomePageScreen> {
       ),
     );
   }
-
 }

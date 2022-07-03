@@ -45,6 +45,7 @@ dependencies:
   api_cache_manager: ^1.0.2
   flutter_progress_hud: ^2.0.2
   snippet_coder_utils: ^1.0.12
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
