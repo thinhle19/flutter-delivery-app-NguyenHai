@@ -15,8 +15,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final scaffoldKey = GlobalKey<ScaffoldState>();
-  GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
+  // final scaffoldKey = GlobalKey<ScaffoldState>();
+  // GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
   late LoginRequestModel requestModel;
   bool showPass = false; // Tạo 1 biến showPass = false (Ko Show Pass)
   final TextEditingController _userController = TextEditingController();
@@ -31,7 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     requestModel = LoginRequestModel(username: '', password: '');
     checklogin();
-
   }
 
   void checklogin() async {
@@ -42,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
               builder: (BuildContext context) => const HomePageScreen()),
-              (Route<dynamic> route) => false);
+          (Route<dynamic> route) => false);
     }
   }
 
@@ -143,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                 child: Row(
                   mainAxisAlignment:
-                  MainAxisAlignment.center, //Tạo khoảng cách 2 bên
+                      MainAxisAlignment.center, //Tạo khoảng cách 2 bên
                   children: <Widget>[
                     RichText(
                       text: TextSpan(
@@ -160,8 +159,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                             builder: (BuildContext context) =>
                                                 SignUpScreen()));
                                   }, // chưa hành động onTap
-                                style:
-                                const TextStyle(color: Colors.blue, fontSize: 15))
+                                style: const TextStyle(
+                                    color: Colors.blue, fontSize: 15))
                           ]),
                     )
                   ],
@@ -200,8 +199,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     if (_passController.text.isNotEmpty && _userController.text.isNotEmpty) {
       Loading.showLoading(context, 'Loading....');
-      print(_userController.text);
-      print(_passController.text);
       var jsonResponse;
       var res = await http.post(
         Uri.parse('https://localsearch-vrp.herokuapp.com/api/auth/login'),
@@ -224,12 +221,12 @@ class _LoginScreenState extends State<LoginScreen> {
             Loading.hideLoadingDialog(context);
           });
           SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
+              await SharedPreferences.getInstance();
           await sharedPreferences.setString("token", jsonResponse['token']);
           Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(
                   builder: (BuildContext context) => const HomePageScreen()),
-                  (Route<dynamic> route) => false);
+              (Route<dynamic> route) => false);
         }
       } else {
         setState(() {
@@ -238,17 +235,17 @@ class _LoginScreenState extends State<LoginScreen> {
         showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text("Error"),
-              content: const Text("Account does not exist!"),
-              actions: [
-                TextButton(
-                  child: const Text("Ok"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ));
+                  title: const Text("Error"),
+                  content: const Text("Account does not exist!"),
+                  actions: [
+                    TextButton(
+                      child: const Text("Ok"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ));
         print("Response status: ${res.body}");
       }
     }
