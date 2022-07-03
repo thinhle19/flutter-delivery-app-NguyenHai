@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../notification_screen.dart';
-import 'map_screen_1.dart';
+import 'map_screen.dart';
 
 class HomeScreenView extends StatefulWidget {
   const HomeScreenView({Key? key}) : super(key: key);
@@ -14,7 +14,6 @@ class HomeScreenView extends StatefulWidget {
 
 class _HomeScreenViewState extends State<HomeScreenView> {
   String fullname = "";
-
 
   @override
   void initState() {
@@ -29,12 +28,15 @@ class _HomeScreenViewState extends State<HomeScreenView> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         actions: <Widget>[
-          IconButton(onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (BuildContext context) => NotificationScreen()));
-          }, icon: const Icon(Icons.notifications)),
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            NotificationScreen()));
+              },
+              icon: const Icon(Icons.notifications)),
         ],
         centerTitle: true,
         title: Text(
@@ -53,7 +55,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
         child: Column(
           children: <Widget>[
             Text(
-              "Hello ${fullname}" ,
+              "Hello ${fullname}",
               // "Hello " ,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -69,7 +71,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) => MapScreen1()));
+                              builder: (BuildContext context) => MapScreen()));
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -109,9 +111,8 @@ class _HomeScreenViewState extends State<HomeScreenView> {
 
   Future<String> getUserToken() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    print (sharedPreferences.get("token"));
+    print(sharedPreferences.get("token"));
     return (sharedPreferences.get("token") ?? "") as String;
-
   }
 
   Future<void> getData() async {
@@ -126,9 +127,7 @@ class _HomeScreenViewState extends State<HomeScreenView> {
     // print(jsonResponse);
     fullname = jsonResponse['fullname'];
     if (mounted) {
-      setState(() {
-      });
+      setState(() {});
     }
   }
-
 }

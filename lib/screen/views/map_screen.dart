@@ -11,62 +11,59 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../component/Loading.dart';
 import '../home_page_screen.dart';
 
-class MapScreen1 extends StatefulWidget {
-  const MapScreen1({Key? key}) : super(key: key);
+class MapScreen extends StatefulWidget {
+  const MapScreen({Key? key}) : super(key: key);
 
   @override
-  State<MapScreen1> createState() => _MapScreen1State();
+  State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreen1State extends State<MapScreen1> {
+class _MapScreenState extends State<MapScreen> {
   String id_vehicle = "2";
   String status = "";
+  bool _isInit = true;
+  bool _isLoading = false;
   bool vehicle_status = false;
-  final Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController? _controller;
+  Location _currentLocation = Location();
   static const String google_api_key = GOOGLE_API_KEY;
 
   static const LatLng sourceLocation =
       LatLng(10.760233298204733, 106.68222611137368);
+  LocationData _currentLocationData = LocationData.fromMap(
+      {'longitude': 10.760233298204733, 'latitude': 106.68222611137368});
   static const LatLng destination =
       LatLng(10.757155546553568, 106.67811696725234);
 
   List<LatLng> polylineCoordinates = [];
-  LocationData? currentLocation;
-
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
 
-  void getCurrentLocation() async {
-    Location location = Location();
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      getLocation();
+    });
+    setState(() {
+      setMarkersIcon();
+    });
+  }
 
-    await location.getLocation().then(
-      (location) {
-        currentLocation = location;
-      },
-    );
-
-    GoogleMapController googleMapController = await _controller.future;
-
-    location.onLocationChanged.listen(
-      (newLoc) {
-        currentLocation = newLoc;
-        googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(
-              zoom: 18,
-              target: LatLng(
-                newLoc.latitude!,
-                newLoc.longitude!,
-              ),
-            ),
-          ),
-        );
-        if (mounted) {
-          setState(() {});
-        }
-      },
-    );
+  void getLocation() async {
+    var location = await _currentLocation.getLocation();
+    _currentLocationData = location;
+    _currentLocation.onLocationChanged.listen((LocationData loc) {
+      _controller
+          ?.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+        target: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0),
+        zoom: 12.0,
+      )));
+      print(loc.latitude);
+      print(loc.longitude);
+      _currentLocationData = loc;
+    });
   }
 
   void getPolyPoints() async {
@@ -90,7 +87,7 @@ class _MapScreen1State extends State<MapScreen1> {
     }
   }
 
-  void setCustomMarkerIcon() {
+  void setMarkersIcon() {
     BitmapDescriptor.fromAssetImage(
             ImageConfiguration.empty, "assets/icons/warehouse.png")
         .then(
@@ -112,16 +109,6 @@ class _MapScreen1State extends State<MapScreen1> {
         currentLocationIcon = icon;
       },
     );
-  }
-
-  @override
-  void initState() {
-    // getUserData();
-    // getToken();
-    setCustomMarkerIcon();
-    getCurrentLocation();
-    getPolyPoints();
-    super.initState();
   }
 
   @override
@@ -148,8 +135,11 @@ class _MapScreen1State extends State<MapScreen1> {
                     :  */
                     GoogleMap(
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(currentLocation!.latitude!,
-                        currentLocation!.longitude!),
+                    target: /* LatLng(
+                        currentLocation!.latitude!,
+                        currentLocation!
+                            .longitude!) */
+                        sourceLocation,
                     zoom: 13.5,
                   ),
                   polylines: {
@@ -160,6 +150,7 @@ class _MapScreen1State extends State<MapScreen1> {
                       width: 6,
                     ),
                   },
+                  myLocationEnabled: true,
                   markers: {
                     Marker(
                       markerId: const MarkerId("currentLocation"),
@@ -167,8 +158,8 @@ class _MapScreen1State extends State<MapScreen1> {
                       infoWindow: InfoWindow(
                         title: "Driver",
                       ),
-                      position: LatLng(currentLocation!.latitude!,
-                          currentLocation!.longitude!),
+                      position: LatLng(_currentLocationData.latitude!,
+                          _currentLocationData.longitude!),
                     ),
                     Marker(
                       markerId: MarkerId("source"),
@@ -187,8 +178,8 @@ class _MapScreen1State extends State<MapScreen1> {
                       position: destination,
                     ),
                   },
-                  onMapCreated: (mapController) {
-                    _controller.complete(mapController);
+                  onMapCreated: (GoogleMapController controller) {
+                    _controller = controller;
                   },
                 ),
               ),

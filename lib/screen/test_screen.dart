@@ -1,37 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
+class MapScreenTest extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _MapScreenTestState createState() => _MapScreenTestState();
 }
 
-class _MyAppState extends State<MyApp> {
-  late GoogleMapController mapController;
+class _MapScreenTestState extends State<MapScreenTest> {
+  GoogleMapController? _controller;
+  Location currentLocation = Location();
+  Set<Marker> _markers = {};
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  void getLocation() async {
+    var location = await currentLocation.getLocation();
+    currentLocation.onLocationChanged.listen((LocationData loc) {
+      _controller
+          ?.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+        target: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0),
+        zoom: 12.0,
+      )));
+      print(loc.latitude);
+      print(loc.longitude);
+      setState(() {
+        _markers.add(Marker(
+            markerId: MarkerId('Home'),
+            position: LatLng(loc.latitude ?? 0.0, loc.longitude ?? 0.0)));
+      });
+    });
+  }
 
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      getLocation();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Maps Sample App'),
-          backgroundColor: Colors.green[700],
-        ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Map"),
+      ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: GoogleMap(
+          zoomControlsEnabled: false,
           initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
+            target: LatLng(48.8561, 2.2930),
+            zoom: 12.0,
           ),
+          onMapCreated: (GoogleMapController controller) {
+            _controller = controller;
+          },
+          markers: _markers,
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(
+          Icons.location_searching,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          getLocation();
+        },
       ),
     );
   }
