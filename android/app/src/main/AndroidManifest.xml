@@ -6,9 +6,11 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="google_map"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
+        
         <meta-data android:name="com.google.android.geo.API_KEY"
-                  android:value="AIzaSyCkyruhKSYxXABYVzFEHLpehHBbDmdHVfU"/>
+                  android:value="AIzaSyBToC3iiKN8rWRTjGonj8rOzMtNr83X1JU"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

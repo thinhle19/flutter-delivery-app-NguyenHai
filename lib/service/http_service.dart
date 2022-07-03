@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:google_map/model/register_request_model.dart';
 import 'package:google_map/model/register_response_model.dart';
+import 'package:google_map/service/local_storage.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -17,6 +18,8 @@ class HttpService {
         body: jsonEncode(info.toJson()),
       );
       if (response.statusCode == 200) {
+        LocalStorage.saveVehicleId(
+            jsonDecode(response.body)['vehicle']['id_vehicle']!);
         return true;
       } else if (response.statusCode == 400) {
         throw const FormatException(

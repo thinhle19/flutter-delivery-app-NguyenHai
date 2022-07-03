@@ -224,9 +224,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         );
-                        await LocalStorage.saveVehicleId(items[vehicleValue]!);
-                        print(
-                            '>>>id is ' + (await LocalStorage.getVehicleId())!);
                         await _showSuccessDialog(_usernameController.text);
                       } catch (e) {
                         await _showErrorDialog(e.toString());
