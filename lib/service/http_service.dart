@@ -20,15 +20,13 @@ class HttpService {
         body: jsonEncode(info.toJson()),
       );
       if (response.statusCode == 200) {
-        LocalStorage.saveVehicleId(
-            jsonDecode(response.body)['vehicle']['id_vehicle']!);
         return true;
       } else if (response.statusCode == 400) {
         throw const FormatException(
             "There's at least 1 incorrect field! Please try again!");
       } else {
         print(response.statusCode);
-        throw Exception('Error happened signUp');
+        throw Exception('Internal Server Error');
       }
     } catch (e) {
       rethrow;

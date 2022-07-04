@@ -225,14 +225,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ),
                         );
-                        await showSuccessDialog(
-                          'Successfully created ${_usernameController.text}\'s account',
-                          context,
-                        );
                         Navigator.of(context).pop();
-                      } catch (e) {
-                        await showErrorDialog(e.toString(), context);
-                        Navigator.of(context).pop();
+                      } on FormatException catch (e) {
+                        await showErrorDialog(
+                            'Some fields are not correct!', context);
+                      } on Exception catch (e) {
+                        await showErrorDialog(
+                            'There might some errors happened!', context);
                       }
                     },
                     child: Text(
@@ -250,9 +249,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Future<void> _signUp(RegisterRequestModel info) async {
-    await showLoadingDialog(context);
-    await HttpService.registerUser(info);
-    Navigator.of(context).pop();
+    showLoadingDialog(context);
+    var signedUp = await HttpService.registerUser(info);
+    if (signedUp) {
+      Navigator.of(context).pop();
+      await showSuccessDialog(
+        'Successfully created ${_usernameController.text}\'s account',
+        context,
+      );
+    }
   }
 
   void onToggleShowPass() {
